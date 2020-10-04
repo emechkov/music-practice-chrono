@@ -13,7 +13,8 @@ It's a magic wand that makes her want to practice more, but... at least we can c
 
 **How to use it?**
 
-* opening the music-practice-timer.html in your browser.
+* download the html file: https://github.com/emechkov/music-practice-timer/raw/main/music-practice-timer.html
+* open the music-practice-timer.html in your browser.
 * click on the "Start" button in the top right corner or press the **spacebar** key on your keyboard.
 * when prompted, grant permission to use your device's microphone. If you don't, this tool will be pretty useless ;)
 * the webapp will then start recording audio and display some usefull info: volume bar chart, practice time and effiency.
