@@ -1,6 +1,8 @@
 # music-practice-timer
 Tool that helps you tracking how much time did you really play music.
 
+Demo here: https://mechkov.fr/music-practice-timer/
+
 **Why did I do this?**
 
 Well my daughter chose to learn to play the violin.
