@@ -1,7 +1,8 @@
 # music-practice-timer
 Tool that helps you tracking how much time did you really play music.
 
-Demo here: https://mechkov.fr/music-practice-timer/
+Demo here: https://mechkov.fr/music-practice-timer/  
+Demo displaying frequencies: https://mechkov.fr/music-practice-timer/?show-frequencies=1
 
 **Why did I do this?**
 
