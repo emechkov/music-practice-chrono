@@ -1,8 +1,8 @@
-# music-practice-timer
+# music-practice-chrono
 Tool that helps you tracking how much time did you really play music.
 
-Demo here: https://mechkov.fr/music-practice-timer/  
-Demo displaying frequencies: https://mechkov.fr/music-practice-timer/?show-frequencies=1
+Demo here: https://mechkov.fr/music-practice-chrono/  
+Demo displaying frequencies: https://mechkov.fr/music-practice-chrono/?show-frequencies=1
 
 **Why did I do this?**
 
@@ -11,13 +11,11 @@ But even though it was her choice and I might say she's pretty good at playing i
 If I just told her that it's time to practice for half an hour, she would make anything to actually play the violin for only five or ten minutes during this half hour.  
 So... in the end it was hard to tell how much time she actually practiced her instrument.  
 At some point I thought that maybe my programming skills could help her somehow to make her practice more effective.  
-That's how I ended up doing this simple music practice timer.  
+That's how I ended up doing this simple music practice stopwatch.  
 It's not a magic wand that makes her want to practice more, but... at least we can clearly see what has been done or not...
 
 **How to use it?**
 
-* download the file music-practice-timer.html
-* open the music-practice-timer.html in your browser.
 * click on the "Start" button in the top right corner or press the **spacebar** key on your keyboard.
 * when prompted, grant permission to use your device's microphone. If you don't, this tool will be pretty useless ;)
 * the webapp will then start recording audio and display some usefull info: volume bar chart, practice time and effiency.
