@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Music practice chrono</title>
+    <link id="favicon" rel="icon" type="image/x-icon" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICAgIDxjaXJjbGUgcj0iMTAwIiBmaWxsPSIjZmZjZTAwIiBjeT0iMTAwIiBjeD0iMTAwIi8+CiAgICA8cGF0aCBmaWxsPSIjZmZhMzAwIiBkPSJNMjAwIDEwMHYtOGwtNDAtNDAtOCA0LTM2LTM1LTMyIDE1IDE3IDE3LTQ4IDEwMyA0NCA0NGgzYzU1IDAgMTAwLTQ1IDEwMC0xMDB6Ii8+CiAgICA8cGF0aCBmaWxsPSIjNTU1YTY2IiBkPSJNOTAgMjhoMjB2MjVIOTBWMjh6Ii8+CiAgICA8cGF0aCBmaWxsPSIjMzMzOTQwIiBkPSJNMTAwIDI4aDEwdjI1aC0xMFYyOHoiLz4KICAgIDxwYXRoIGZpbGw9IiM1NTVhNjYiIGQ9Ik00MCA1MmwxNC0xMyAxOCAxNy0xNCAxNC0xOC0xOHoiLz4KICAgIDxwYXRoIGZpbGw9IiMzMzM5NDAiIGQ9Ik0xNDIgNzBsLTE0LTE0IDE4LTE3IDE0IDEzLTE4IDE4eiIvPgogICAgPGNpcmNsZSByPSI2Ni4yIiBmaWxsPSIjNzA3Nzg5IiBjeT0iMTA5LjciIGN4PSIxMDAiLz4KICAgIDxwYXRoIGZpbGw9IiM1NTVhNjYiIGQ9Ik0xMDAgNDN2MTMzYTY2IDY2IDAgMTAwLTEzM3oiLz4KICAgIDxjaXJjbGUgcj0iNTAuNCIgZmlsbD0iI2ZmZiIgY3k9IjEwOS43IiBjeD0iMTAwIi8+CiAgICA8cGF0aCBmaWxsPSIjZTllZGY1IiBkPSJNMTAwIDU5djEwMWE1MCA1MCAwIDAwMC0xMDF6Ii8+CiAgICA8cGF0aCBmaWxsPSIjNzA3Nzg5IiBkPSJNODQgMjFoMzJ2MTVIODRWMjF6Ii8+CiAgICA8cGF0aCBmaWxsPSIjNTU1YTY2IiBkPSJNMTAwIDIxaDE2djE1aC0xNlYyMXoiLz4KICAgIDxwYXRoIGQ9Ik0xMjQgMTE5YzItNCA0LTkgNC0xNSAxLTMgMC03LTItMTAtMi01LTctOC0xMS0xMWwtOC03LTEtMS0zLTVjMC0xLTEtMi0zLTJzLTMgMS0zIDN2NTVsLTktMmMtOSAwLTE2IDUtMTYgMTJzNyAxMyAxNiAxMyAxNS02IDE1LTEzdi0zNmM1IDIgMTMgNiAxNSAxN2wtMSAyYy0yIDEtMSAzIDAgNGg0YTIzIDIzIDAgMDAzLTR6Ii8+Cjwvc3ZnPg==">
+    <style>
+        .controlButton {
+            float: right;
+        }
+        .volumeBars,
+        .frequencyBars {
+            margin: 20px 0;
+            border: 1px solid black;
+            min-height: 256px;
+            width: 100%;
+            display: flex;
+            align-items: flex-end;
+        }
+        .volumeBar,
+        .frequencyBar {
+            background-color: #b0dae8ab;
+            width: 5px;
+        }
+        .timer,
+        .efficiency {
+            font-size: 50px;
+            text-align: center;
+        }
+
+        #logs {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+        table {
+            border-collapse: collapse;
+            border: 2px solid rgb(200, 200, 200);
+            letter-spacing: 1px;
+            font-family: sans-serif;
+            font-size: .8rem;
+            min-width: 400px;
+        }
+        td,
+        th {
+            border: 1px solid rgb(190, 190, 190);
+            padding: 7px 5px;
+        }
+        th {
+            background-color: rgb(235, 235, 235);
+        }
+        td {
+            text-align: center;
+        }
+        [v-cloak] {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="app" v-cloak>
+        <label>
+            Min Practice Volume:
+            <input type="number" v-model="minPracticeVolume" v-on:change="updateMinPracticeVolume" min="0" max="256">
+        </label>
+        <button v-if="!started" v-on:click="startMic" class="controlButton">Start</button>
+        <button v-if="micOn" v-on:click="pauseMic" class="controlButton">Pause</button>
+        <button v-if="started && !micOn" v-on:click="resumeMic" class="controlButton">Resume</button>
+        <div class="volumeBars" v-bind:style="{ background: 'linear-gradient(to top, rgba(0, 0, 0, 0.1) ' + minPracticeVolume + 'px, #ffffff ' + minPracticeVolume + 'px)' }">
+            <div v-for="volume in volumeArray" class="volumeBar" v-bind:style="{ height: volume + 'px' }"></div>
+        </div>
+        <div class="timer">Practice time: {{practiceTime}}</div>
+        <div class="efficiency">Efficiency: {{efficiency}}%</div>
+        <div v-if="showFrequency" class="frequencyBars">
+            <div v-for="frequency in frequencyArray" class="frequencyBar" v-bind:style="{ height: frequency + 'px' }"></div>
+        </div>
+        <div id="logs" v-if="started">
+            <table>
+                <caption>Practice sessions</caption>
+                <thead>
+                    <tr>
+                        <th>Start</th>
+                        <th>End</th>
+                        <th>Length</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="practice in practices">
+                        <td>{{practice.startTime}}</td>
+                        <td>{{practice.endTime}}</td>
+                        <td>{{practice.length}}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table>
+                <caption>Pauses</caption>
+                <thead>
+                    <tr>
+                        <th>Start</th>
+                        <th>End</th>
+                        <th>Length</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="pause in pauses">
+                        <td>{{pause.startTime}}</td>
+                        <td>{{pause.endTime}}</td>
+                        <td>{{pause.length}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <audio id="audio-bell" style="display: none;" src="https://www.zapsplat.com/wp-content/uploads/2015/sound-effects-46416/zapsplat_bell_small_ring_close_clean_shop_door_bell_005_50041.mp3"></audio>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script>
+        var currentVolume = 0;
+        var currentDate = 0;
+        var audioContext;
+        var analyser;
+        var maxIdleTime = 60;
+        var idleTime = 0;
+
+        function getDateDiff(startDate, endDate) {
+            var diff = Math.floor((endDate - startDate)/1000);
+            var diffSec = diff % 60;
+            var diffMin = Math.floor(diff/60) % 60;
+            var diffHour = Math.floor(diff/3600);
+            var diffText = diffHour ? diffHour + 'h' : '';
+            diffText += diffMin ? diffMin + 'm' : '';
+            diffText += diffSec ? diffSec + 's' : '';
+            diffText = diffText ? diffText : '0s';
+            return diffText;
+        }
+
+        function startMic() {
+            navigator.mediaDevices.getUserMedia({ audio: true }).then(function(stream) {
+                logStart();
+                audioContext = new AudioContext();
+                analyser = audioContext.createAnalyser();
+                var microphone = audioContext.createMediaStreamSource(stream);
+                var javascriptNode = audioContext.createScriptProcessor(2048, 1, 1);
+
+                analyser.smoothingTimeConstant = 0.8;
+                analyser.fftSize = 4096;
+
+                microphone.connect(analyser);
+                analyser.connect(javascriptNode);
+                javascriptNode.connect(audioContext.destination);
+                javascriptNode.onaudioprocess = onAudioProcess;
+            }).catch(function(err) {
+                console.log('Error:', err);
+            });
+        }
+        
+        function pauseMic() {
+            logPause();
+            audioContext.suspend();
+            app.volumeArray.push(0);
+        }
+
+        function resumeMic() {
+            logResume();
+            idleTime = 0;
+            audioContext.resume();
+        }
+
+        function onAudioProcess() {
+            app.frequencyArray = new Uint8Array(analyser.frequencyBinCount);
+            analyser.getByteFrequencyData(app.frequencyArray);
+            app.frequencyArray = app.frequencyArray.slice(64, 512);
+            var volumeMax = Math.max(...app.frequencyArray);
+            var volumeSum = app.frequencyArray.reduce((acc, volume) => acc + volume);
+            var volumeAvg = Math.round(volumeSum / app.frequencyArray.length);
+            logVolume(volumeMax - volumeAvg);
+        }
+
+        function logVolume(volume) {
+            var date = Math.floor(Date.now() / 1000);
+            if (!currentDate) {
+                currentDate = date;
+            }
+            if (date == currentDate) {
+                currentVolume = Math.max(currentVolume, volume);
+            } else {
+                app.volumeArray.push(currentVolume);
+                currentDate = date;
+                currentVolume = volume;
+                getPracticeTime();
+                checkIdle(volume);
+            }
+        }
+
+        function checkIdle(volume) {
+            if (volume < app.minPracticeVolume) {
+                idleTime += 1;
+                if (idleTime >= maxIdleTime) {
+                    idleTime = 0;
+                    var audioBell = document.getElementById('audio-bell');
+                    audioBell.play();
+                }
+            } else {
+                idleTime = 0;
+            }
+        }
+
+        function getPracticeTime() {
+            var fullTime = app.volumeArray.length;
+            var practiceTime = app.volumeArray.filter(volume => (volume > app.minPracticeVolume)).length;
+            var minutes = Math.floor(practiceTime / 60);
+            var seconds = practiceTime % 60;
+            var minutesStr = minutes.toString().padStart(2, '0');
+            var secondsStr = seconds.toString().padStart(2, '0');
+            app.practiceTime = minutesStr + ':' + secondsStr;
+            app.efficiency = Math.round(practiceTime/fullTime * 100);
+        }
+
+        function logStart() {
+            app.practices.push({
+                startDate: new Date(),
+                startTime: (new Date()).toTimeString().substr(0,8)
+            });
+        }
+
+        function logPause() {
+            var currentPractice = app.practices[app.practices.length -1];
+            currentPractice.endDate = new Date();
+            currentPractice.endTime = (new Date()).toTimeString().substr(0,8);
+            currentPractice.length = getDateDiff(currentPractice.startDate, currentPractice.endDate);
+
+            app.pauses.push({
+                startDate: new Date(),
+                startTime: (new Date()).toTimeString().substr(0,8)
+            });
+        }
+
+        function logResume() {
+            app.practices.push({
+                startDate: new Date(),
+                startTime: (new Date()).toTimeString().substr(0,8)
+            });
+
+            var currentPause = app.pauses[app.pauses.length -1];
+            currentPause.endDate = new Date();
+            currentPause.endTime = (new Date()).toTimeString().substr(0,8);
+            currentPause.length = getDateDiff(currentPause.startDate, currentPause.endDate);
+        }
+
+        var app = new Vue({
+            el: '#app',
+            data: {
+                started: false,
+                micOn: false,
+                minPracticeVolume: localStorage.getItem('minPracticeVolume') || 150,
+                volumeArray: [],
+                practiceTime: '00:00',
+                efficiency: 0,
+                frequencyArray: [],
+                showFrequency: (new URLSearchParams(window.location.search)).get('show-frequencies') == '1',
+                practices: [],
+                pauses: []
+            },
+            methods: {
+                startMic: function() {
+                    this.started = true;
+                    this.micOn = true;
+                    startMic();
+                },
+                pauseMic: function() {
+                    this.micOn = false;
+                    pauseMic();
+                },
+                resumeMic: function() {
+                    this.micOn = true;
+                    resumeMic();
+                },
+                updateMinPracticeVolume: function() {
+                    localStorage.setItem('minPracticeVolume', this.minPracticeVolume);
+                    if (this.started && !this.micOn) {
+                        getPracticeTime();
+                    }
+                }
+            }
+        });
+
+        document.body.onkeyup = function(e) {
+            if (e.keyCode == 32) {
+                if (!app.started) {
+                    app.startMic();
+                } else if (app.micOn) {
+                    app.pauseMic();
+                } else {
+                    app.resumeMic();
+                }
+            }
+        }
+    </script>
+</body>
+</html>
